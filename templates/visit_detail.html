@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Atención #{{ visit.id }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">ATENCIÓN #{{ visit.id }}</p><h1>{{ visit.last_name }}, {{ visit.first_name }}</h1><p class="muted">{{ visit.course }}{% if visit.school_id %} · ID {{ visit.school_id }}{% endif %}</p></div><span class="status large {{ visit.status }}">{{ {'espera':'En espera','atencion':'En atención','finalizada':'Finalizada'}[visit.status] }}</span></div>
+<div class="detail-grid">
+<section class="panel"><div class="section-heading"><h2>Registro de atención</h2><span class="muted small">Ingreso: {{ visit.arrived_at }}</span></div>
+<div class="info-grid"><div><span>Motivo</span><strong>{{ visit.reason }}</strong></div><div><span>Registrado por</span><strong>{{ visit.nurse_username }}</strong></div><div class="span-2"><span>Síntomas iniciales</span><p>{{ visit.symptoms or 'Sin información registrada.' }}</p></div></div>
+{% if visit.status != 'finalizada' %}
+<form method="post" class="form-grid detail-form"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="guardar">
+<label class="span-2">Síntomas / observaciones<textarea name="symptoms" rows="3">{{ visit.symptoms }}</textarea></label>
+<label class="span-2">Acciones realizadas<textarea name="actions_taken" rows="3">{{ visit.actions_taken }}</textarea></label>
+<label class="span-2">Resultado / indicaciones<textarea name="outcome" rows="2">{{ visit.outcome }}</textarea></label>
+<label class="span-2">Notas internas autorizadas<textarea name="notes" rows="2">{{ visit.notes }}</textarea></label>
+<button class="btn secondary span-2" type="submit">Guardar cambios</button></form>
+<div class="action-row">
+{% if visit.status == 'espera' %}<form method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="iniciar"><button class="btn primary" type="submit">Iniciar atención</button></form>{% endif %}
+<form method="post" onsubmit="return confirm('¿Confirmas que esta atención ha finalizado?')"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="action" value="finalizar"><input type="hidden" name="symptoms" value="{{ visit.symptoms }}"><input type="hidden" name="actions_taken" value="{{ visit.actions_taken }}"><input type="hidden" name="outcome" value="{{ visit.outcome }}"><input type="hidden" name="notes" value="{{ visit.notes }}"><button class="btn danger" type="submit">Finalizar atención</button></form>
+</div>
+{% else %}
+<div class="info-grid"><div class="span-2"><span>Acciones realizadas</span><p>{{ visit.actions_taken or '—' }}</p></div><div class="span-2"><span>Resultado / indicaciones</span><p>{{ visit.outcome or '—' }}</p></div><div class="span-2"><span>Notas internas</span><p>{{ visit.notes or '—' }}</p></div><div><span>Salida</span><strong>{{ visit.departed_at or '—' }}</strong></div></div>
+{% endif %}
+</section>
+<aside class="panel document-panel"><div class="document-icon">▤</div><h2>Constancias</h2><p class="muted">Generadas desde el mismo registro. Revisa el contenido antes de imprimir y entrega solo al destinatario correspondiente.</p><a class="btn primary full" target="_blank" rel="noopener" href="{{ url_for('receipt', visit_id=visit.id, tipo='alumno') }}">Constancia del alumno ↗</a><a class="btn secondary full" target="_blank" rel="noopener" href="{{ url_for('receipt', visit_id=visit.id, tipo='profesor') }}">Constancia del profesor ↗</a><p class="small muted">Los datos de salud no se incluyen en la constancia del profesor; se muestra solo la información administrativa mínima.</p></aside>
+</div>
+{% endblock %}

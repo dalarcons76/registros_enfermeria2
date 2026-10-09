@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Enfermería escolar{% endblock %} · Colegio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('dashboard') if current_user else url_for('login') }}"><span class="brand-mark">+</span><span>Enfermería<span class="brand-muted"> escolar</span></span></a>
+  {% if current_user %}
+  <nav>
+    <a href="{{ url_for('dashboard') }}">Panel</a>
+    <a href="{{ url_for('new_visit') }}">Nueva atención</a>
+    <a href="{{ url_for('students') }}">Alumnos</a>
+    <a href="{{ url_for('visit_history') }}">Historial</a>
+    {% if current_user.role == 'admin' %}<a href="{{ url_for('create_user') }}">Usuarios</a>{% endif %}
+  </nav>
+  <div class="user-area"><span>{{ current_user.username }}</span><form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="link-button" type="submit">Salir</button></form></div>
+  {% endif %}
+</header>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flashes">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">Sistema interno de enfermería · Acceso restringido</footer>
+</body>
+</html>

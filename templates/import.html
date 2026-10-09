@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Importar alumnos{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">CARGA DE DATOS</p><h1>Importar alumnos desde CSV</h1><p class="muted">Importación inicial o actualización manual del directorio.</p></div></div>
+<section class="panel narrow"><h2>Formato del archivo</h2><p>El archivo debe estar codificado en UTF-8 y contener estas columnas con estos nombres exactos:</p><div class="code-sample">identificador_escolar,nombre,apellido,curso</div><p class="small muted">El identificador escolar es opcional. Las filas incompletas y los identificadores duplicados se omiten. No subas información clínica ni archivos exportados desde Kimche sin autorización del colegio.</p>
+<form method="post" enctype="multipart/form-data"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><label>Archivo CSV<input type="file" name="file" accept=".csv,text/csv" required></label><div class="form-actions"><a class="btn ghost" href="{{ url_for('students') }}">Cancelar</a><button class="btn primary" type="submit">Importar alumnos</button></div></form></section>
+{% endblock %}

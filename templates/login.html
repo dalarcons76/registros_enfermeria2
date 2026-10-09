@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Iniciar sesión{% endblock %}
+{% block content %}
+<section class="login-wrap">
+  <div class="login-aside"><div class="big-cross">+</div><p class="eyebrow">GESTIÓN DE ATENCIONES</p><h1>Una atención a la vez.<br>Un registro, sin duplicar.</h1><p>Controla la sala de espera, registra la atención y genera constancias para el alumno y su profesor desde un solo lugar.</p></div>
+  <form class="panel login-card" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <p class="eyebrow">BIENVENIDO/A</p><h2>Iniciar sesión</h2><p class="muted">Ingresa con tu cuenta institucional autorizada.</p>
+    <label>Usuario<input name="username" required autocomplete="username" autofocus></label>
+    <label>Contraseña<input name="password" type="password" required autocomplete="current-password"></label>
+    <button class="btn primary full" type="submit">Ingresar al sistema</button>
+    <p class="small muted">Si no tienes una cuenta, solicita acceso al administrador del sistema.</p>
+  </form>
+</section>
+{% endblock %}

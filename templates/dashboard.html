@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Panel de atención{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">RESUMEN DIARIO</p><h1>Panel de enfermería</h1><p class="muted">Coordina la atención y reduce el tiempo dedicado a tareas repetidas.</p></div><a class="btn primary" href="{{ url_for('new_visit') }}">＋ Nueva atención</a></div>
+<div class="stats">
+  <div class="stat"><span class="stat-label">Atenciones hoy</span><strong>{{ counts.total }}</strong><span class="stat-note">Total de registros</span></div>
+  <div class="stat"><span class="stat-label">En espera</span><strong>{{ counts.espera }}</strong><span class="stat-note"><i class="dot amber"></i> Pendientes</span></div>
+  <div class="stat"><span class="stat-label">En atención</span><strong>{{ counts.atencion }}</strong><span class="stat-note"><i class="dot blue"></i> En curso</span></div>
+  <div class="stat"><span class="stat-label">Finalizadas hoy</span><strong>{{ counts.finalizadas }}</strong><span class="stat-note"><i class="dot green"></i> Cerradas</span></div>
+</div>
+<section class="panel">
+  <div class="section-heading"><div><h2>Cola de atención</h2><p class="muted">Ordenada con la atención activa primero y luego por hora de llegada.</p></div><span class="pill">{{ queue|length }} activa(s)</span></div>
+  {% if queue %}
+  <div class="table-wrap"><table><thead><tr><th>Alumno</th><th>Curso</th><th>Ingreso</th><th>Estado</th><th></th></tr></thead><tbody>
+  {% for v in queue %}<tr><td><strong>{{ v.last_name }}, {{ v.first_name }}</strong><span class="subline">Atención #{{ v.id }}</span></td><td>{{ v.course }}</td><td>{{ v.arrived_at[11:16] if v.arrived_at|length > 15 else v.arrived_at }}</td><td><span class="status {{ v.status }}">{{ {'espera':'En espera','atencion':'En atención'}[v.status] }}</span></td><td><a class="table-link" href="{{ url_for('visit_detail', visit_id=v.id) }}">Abrir →</a></td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<div class="empty"><div class="empty-icon">✓</div><h3>No hay atenciones pendientes</h3><p>Cuando llegue un alumno, registra una nueva atención para añadirlo a la cola.</p><a class="btn secondary" href="{{ url_for('new_visit') }}">Registrar atención</a></div>{% endif %}
+</section>
+<div class="quick-links"><a href="{{ url_for('students') }}"><span class="quick-icon">♙</span><span><strong>Directorio de alumnos</strong><small>Buscar o registrar alumnos</small></span><b>→</b></a><a href="{{ url_for('visit_history') }}"><span class="quick-icon">▤</span><span><strong>Historial de atenciones</strong><small>Consultar registros anteriores</small></span><b>→</b></a></div>
+{% endblock %}

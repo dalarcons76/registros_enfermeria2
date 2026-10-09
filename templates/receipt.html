@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Constancia · Atención #{{ visit.id }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body class="receipt-body"><div class="receipt-toolbar"><a class="btn ghost" href="{{ url_for('visit_detail', visit_id=visit.id) }}">← Volver a atención</a><button class="btn primary" onclick="window.print()">Imprimir / Guardar PDF</button></div>
+<article class="receipt"><header class="receipt-head"><div class="brand-mark">+</div><div><p class="eyebrow">ENFERMERÍA ESCOLAR</p><h1>Constancia de atención</h1><p class="muted">Documento generado desde el registro único de atención</p></div></header>
+<div class="receipt-tag">{{ 'COPIA PARA EL ALUMNO' if tipo == 'alumno' else 'CONSTANCIA PARA EL PROFESOR' }}</div>
+<p>Se deja constancia de que el/la estudiante <strong>{{ visit.first_name }} {{ visit.last_name }}</strong>, del curso <strong>{{ visit.course }}</strong>, acudió a enfermería.</p>
+<div class="receipt-facts"><div><span>Fecha</span><strong>{{ visit.arrived_at[:10] }}</strong></div><div><span>Hora de ingreso</span><strong>{{ visit.arrived_at[11:16] if visit.arrived_at|length > 15 else visit.arrived_at }}</strong></div><div><span>Hora de salida</span><strong>{{ (visit.departed_at[11:16] if visit.departed_at and visit.departed_at|length > 15 else visit.departed_at) or 'Pendiente' }}</strong></div><div><span>Folio</span><strong>ENF-{{ '%06d'|format(visit.id) }}</strong></div></div>
+{% if tipo == 'alumno' %}
+<div class="receipt-section"><h2>Resumen de atención</h2><p><strong>Motivo:</strong> {{ visit.reason }}</p><p><strong>Medidas / acciones:</strong> {{ visit.actions_taken or 'No especificadas en esta constancia.' }}</p><p><strong>Indicaciones:</strong> {{ visit.outcome or 'Consultar con enfermería si requiere más información.' }}</p></div>
+{% else %}
+<div class="receipt-section"><h2>Información administrativa</h2><p>El/la estudiante estuvo en enfermería durante el horario indicado. Para cualquier consulta, contacte al personal autorizado de enfermería.</p><p>No se incluyen síntomas, antecedentes ni detalles clínicos en esta copia destinada al profesor.</p></div>
+{% endif %}
+<div class="signature-row"><div><span>Firma / timbre de enfermería</span></div><div><span>Fecha de emisión: {{ printed_at[:10] }}</span></div></div>
+<p class="receipt-foot">Documento interno del colegio. Entregar únicamente al destinatario correspondiente. Folio de referencia: ENF-{{ '%06d'|format(visit.id) }}.</p></article></body></html>

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Historial{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">CONSULTA</p><h1>Historial de atenciones</h1><p class="muted">Acceso restringido al personal autorizado. Se muestran hasta 200 registros o 300 resultados de búsqueda.</p></div><a class="btn primary" href="{{ url_for('new_visit') }}">＋ Nueva atención</a></div>
+<form class="search-form panel" method="get"><input name="q" value="{{ q }}" placeholder="Buscar por alumno, curso o motivo"><button class="btn secondary" type="submit">Buscar</button></form>
+<section class="panel"><div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Alumno</th><th>Curso</th><th>Motivo</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for v in visits %}<tr><td>{{ v.arrived_at }}</td><td><strong>{{ v.last_name }}, {{ v.first_name }}</strong><span class="subline">#{{ v.id }}</span></td><td>{{ v.course }}</td><td>{{ v.reason }}</td><td><span class="status {{ v.status }}">{{ {'espera':'En espera','atencion':'En atención','finalizada':'Finalizada'}[v.status] }}</span></td><td><a class="table-link" href="{{ url_for('visit_detail', visit_id=v.id) }}">Ver →</a></td></tr>{% else %}<tr><td colspan="6" class="empty-cell">No se encontraron atenciones.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

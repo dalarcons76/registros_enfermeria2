@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Nueva atención{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">REGISTRO ÚNICO</p><h1>Nueva atención</h1><p class="muted">Registra los datos una vez; las constancias se generan desde esta atención.</p></div><a class="btn ghost" href="{{ url_for('dashboard') }}">← Volver al panel</a></div>
+<form method="post" class="panel form-panel">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  <div class="form-section"><span class="step">01</span><div class="form-section-content"><h2>Datos del alumno</h2><div class="form-grid">
+    <label class="span-2">Buscar por nombre, apellido, curso o identificador<input id="student-search" value="{{ q }}" placeholder="Escribe para filtrar la lista" autocomplete="off"></label>
+    <label class="span-2">Alumno<select id="student_id" name="student_id" required><option value="">Selecciona un alumno…</option>{% for s in students %}<option value="{{ s.id }}" data-search="{{ (s.first_name ~ ' ' ~ s.last_name ~ ' ' ~ s.course ~ ' ' ~ (s.school_id or ''))|lower }}">{{ s.last_name }}, {{ s.first_name }} — {{ s.course }}{% if s.school_id %} · {{ s.school_id }}{% endif %}</option>{% endfor %}</select></label>
+    <p class="helper span-2">¿No aparece? <a href="{{ url_for('students') }}">Registra al alumno en el directorio</a> y vuelve a esta pantalla.</p>
+  </div></div></div>
+  <div class="form-section"><span class="step">02</span><div class="form-section-content"><h2>Motivo de consulta</h2><div class="form-grid">
+    <label>Hora de ingreso<input type="datetime-local" name="arrived_at" value="{{ now[:16] }}" required></label>
+    <label>Motivo<select name="reason" required><option value="">Seleccionar…</option>{% for r in ['Malestar general','Dolor de cabeza','Dolor abdominal','Golpe o caída','Herida','Fiebre','Náuseas o vómitos','Accidente escolar','Apoyo emocional','Otro'] %}<option>{{ r }}</option>{% endfor %}</select></label>
+    <label class="span-2">Síntomas u observaciones iniciales<textarea name="symptoms" rows="3" placeholder="Describe solo la información necesaria para la atención."></textarea></label>
+  </div></div></div>
+  <div class="form-section"><span class="step">03</span><div class="form-section-content"><h2>Atención (puede completarse después)</h2><div class="form-grid">
+    <label class="span-2">Acciones realizadas<textarea name="actions_taken" rows="3" placeholder="Cuidados o medidas realizadas."></textarea></label>
+    <label class="span-2">Resultado / indicaciones<textarea name="outcome" rows="2" placeholder="Resultado, derivación o indicaciones entregadas."></textarea></label>
+    <label class="span-2">Notas internas autorizadas<textarea name="notes" rows="2" placeholder="Información estrictamente necesaria para continuidad de atención."></textarea></label>
+  </div></div></div>
+  <div class="form-actions"><a class="btn ghost" href="{{ url_for('dashboard') }}">Cancelar</a><button class="btn primary" type="submit">Guardar y abrir atención</button></div>
+</form>
+<script>
+const search = document.getElementById('student-search');
+const select = document.getElementById('student_id');
+search.addEventListener('input', () => {
+  const q = search.value.toLocaleLowerCase('es').trim();
+  for (const option of select.options) {
+    if (!option.value) continue;
+    option.hidden = !option.dataset.search.includes(q);
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Alumnos{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">DIRECTORIO</p><h1>Alumnos</h1><p class="muted">Un registro básico por alumno, reutilizable en cada atención.</p></div><a class="btn secondary" href="{{ url_for('import_students') }}">Importar CSV</a></div>
+<div class="two-col">
+  <section class="panel"><h2>Registrar alumno</h2><form method="post" class="form-grid">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <label class="span-2">Nombre(s)<input name="first_name" maxlength="80" required></label>
+    <label class="span-2">Apellido(s)<input name="last_name" maxlength="80" required></label>
+    <label>Curso<input name="course" placeholder="Ej. 2° Medio A" maxlength="40" required></label>
+    <label>Identificador escolar <span class="muted">(opcional)</span><input name="school_id" maxlength="80"></label>
+    <button class="btn primary span-2" type="submit">Guardar alumno</button>
+  </form></section>
+  <section class="panel"><h2>Buscar alumno</h2><form class="search-form" method="get"><input name="q" value="{{ q }}" placeholder="Nombre, apellido, curso o ID"><button class="btn secondary" type="submit">Buscar</button></form><p class="small muted">Se muestran hasta 200 coincidencias. Para crear una atención, usa “Nueva atención”.</p><div class="toolbar"><a href="{{ url_for('export_students') }}">Exportar alumnos CSV ↓</a></div></section>
+</div>
+<section class="panel"><div class="section-heading"><h2>Directorio <span class="count">{{ students|length }}</span></h2></div>
+{% if students %}<div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Curso</th><th>Identificador</th></tr></thead><tbody>{% for s in students %}<tr><td><strong>{{ s.last_name }}, {{ s.first_name }}</strong></td><td>{{ s.course }}</td><td>{{ s.school_id or '—' }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty compact"><p>No hay alumnos que mostrar. Puedes registrar uno o importar un CSV.</p></div>{% endif %}
+</section>
+{% endblock %}

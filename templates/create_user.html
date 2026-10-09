@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Crear usuario{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">ADMINISTRACIÓN</p><h1>Crear usuario</h1><p class="muted">Solo los administradores pueden crear cuentas.</p></div></div>
+<section class="panel narrow"><form method="post" class="form-grid"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+<label class="span-2">Nombre de usuario<input name="username" minlength="3" maxlength="80" autocomplete="off" required></label>
+<label class="span-2">Contraseña temporal (mínimo 12 caracteres)<input type="password" name="password" minlength="12" autocomplete="new-password" required></label>
+<label class="span-2">Rol<select name="role"><option value="enfermeria">Enfermería</option><option value="admin">Administrador</option></select></label>
+<div class="span-2 form-actions"><a class="btn ghost" href="{{ url_for('dashboard') }}">Cancelar</a><button class="btn primary" type="submit">Crear usuario</button></div>
+</form></section>
+{% endblock %}
